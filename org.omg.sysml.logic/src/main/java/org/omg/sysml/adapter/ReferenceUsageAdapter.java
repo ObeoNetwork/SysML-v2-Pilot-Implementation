@@ -21,17 +21,9 @@
 
 package org.omg.sysml.adapter;
 
-import org.eclipse.emf.common.util.EList;
-import org.omg.sysml.lang.sysml.Element;
 import org.omg.sysml.lang.sysml.Feature;
 import org.omg.sysml.lang.sysml.ReferenceUsage;
-import org.omg.sysml.lang.sysml.SuccessionAsUsage;
-import org.omg.sysml.lang.sysml.SysMLPackage;
 import org.omg.sysml.lang.sysml.TransitionUsage;
-import org.omg.sysml.lang.sysml.Type;
-import org.omg.sysml.util.FeatureUtil;
-import org.omg.sysml.util.SysMLLibraryUtil;
-import org.omg.sysml.util.TypeUtil;
 import org.omg.sysml.util.UsageUtil;
 
 public class ReferenceUsageAdapter extends UsageAdapter {
@@ -47,57 +39,16 @@ public class ReferenceUsageAdapter extends UsageAdapter {
 		return (ReferenceUsage)super.getTarget();
 	}
 	
-	// Implicit Generalization
-	
-	/**
-	 * @satisfies checkTransitionUsagePayloadSpecialization
-	 */
 	@Override
-	public void addDefaultGeneralType() {
+	public void doTransform() {
+		super.doTransform();
 		ReferenceUsage target = getTarget();
-		Type type = target.getOwningType();
-		if (type instanceof TransitionUsage) {
-			// checkTransitionUsagePayloadSpecialization
-			if (target == UsageUtil.getPayloadParameterOf((TransitionUsage)type)) {
-				Feature accepterParameter = UsageUtil.getAccepterPayloadParameterOf((TransitionUsage)type);
-				if (accepterParameter != null) {
-					addImplicitGeneralType(SysMLPackage.eINSTANCE.getSubsetting(), 
-							FeatureUtil.chainFeatures((Feature)accepterParameter.getOwningType(), accepterParameter));
-					target.setDeclaredName(accepterParameter.getDeclaredName());
-					return;
-				}
-			}
-		} else if (type instanceof SuccessionAsUsage) {
-			EList<Feature> ends = ((SuccessionAsUsage)type).getOwnedEndFeature();
-			int i = ends.indexOf(target);
-			if (i < 2 && target.getOwnedReferenceSubsetting() == null && 
-					!TypeUtil.isImplicitSpecializationDeclaredFor(target, SysMLPackage.eINSTANCE.getReferenceSubsetting())) {
-				if (i == 0) {
-					TypeUtil.addImplicitGeneralTypeTo(target,
-							SysMLPackage.eINSTANCE.getReferenceSubsetting(), 
-							UsageUtil.getSourceFeature((SuccessionAsUsage)type));
-				} else if (i == 1) {
-					TypeUtil.addImplicitGeneralTypeTo(target,
-							SysMLPackage.eINSTANCE.getReferenceSubsetting(), 
-							UsageUtil.getTargetFeature((SuccessionAsUsage)type));
-				}
+		if (target.getOwningType() instanceof TransitionUsage transition
+				&& target == UsageUtil.getPayloadParameterOf(transition)) {
+			Feature accepter = UsageUtil.getAccepterPayloadParameterOf(transition);
+			if (accepter != null) {
+				target.setDeclaredName(accepter.getDeclaredName());
 			}
 		}
-		super.addDefaultGeneralType();
 	}
-	
-	// Computed Redefinitions
-	
-	@Override
-	protected void addRedefinitions(Element skip) {
-		ReferenceUsage target = getTarget();
-		Type type = target.getOwningType();
-		if ((type instanceof TransitionUsage) && target == UsageUtil.getTransitionLinkFeatureOf((TransitionUsage)type)) {
-			addImplicitGeneralType(SysMLPackage.eINSTANCE.getRedefinition(), 
-					(Feature)SysMLLibraryUtil.getLibraryType(getTarget(), TRANSITION_LINK_FEATURE));
-		} else {
-			super.addRedefinitions(skip);
-		}
-	}
-	
 }

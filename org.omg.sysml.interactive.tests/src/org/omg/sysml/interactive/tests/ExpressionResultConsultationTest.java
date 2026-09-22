@@ -48,6 +48,7 @@ import org.omg.sysml.lang.sysml.ReturnParameterMembership;
 import org.omg.sysml.lang.sysml.SysMLFactory;
 import org.omg.sysml.lang.sysml.SysMLPackage;
 import org.omg.sysml.lang.sysml.Type;
+import org.omg.sysml.logic.implicit.specialization.ImplicitSpecializationCacheUtil;
 import org.omg.sysml.util.ElementUtil;
 import org.omg.sysml.util.FeatureUtil;
 import org.omg.sysml.util.TypeUtil;
@@ -584,6 +585,9 @@ public class ExpressionResultConsultationTest {
 		for (var contents = resource.getAllContents(); contents.hasNext();) {
 			if (contents.next() instanceof Element element) {
 				ElementUtil.clean(element);
+				if(element instanceof Type type) {
+					ImplicitSpecializationCacheUtil.invalidate(type);
+				}
 			}
 		}
 	}

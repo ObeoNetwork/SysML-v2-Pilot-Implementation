@@ -23,11 +23,7 @@ package org.omg.sysml.adapter;
 
 import org.omg.sysml.lang.sysml.Feature;
 import org.omg.sysml.lang.sysml.FeatureChainExpression;
-import org.omg.sysml.lang.sysml.FeatureDirectionKind;
 import org.omg.sysml.lang.sysml.SysMLFactory;
-import org.omg.sysml.lang.sysml.SysMLPackage;
-import org.omg.sysml.util.FeatureUtil;
-import org.omg.sysml.util.ImplicitGeneralizationMap;
 import org.omg.sysml.util.TypeUtil;
 
 public class FeatureChainExpressionAdapter extends OperatorExpressionAdapter {
@@ -41,26 +37,6 @@ public class FeatureChainExpressionAdapter extends OperatorExpressionAdapter {
 		return (FeatureChainExpression)super.getTarget();
 	}
 
-	/**
-	 * @satisfies checkFeatureChainExpressionResultSpecialization
-	 */
-	@Override
-	protected void addResultTyping() {
-		FeatureChainExpression target = getTarget();
-		Feature result = target.getResult();
-		Feature sourceTarget = target.sourceTargetFeature();
-		if (result != null && sourceTarget != null) {
-			Feature sourceParameter = target.getOwnedFeature().stream().
-					filter(param->param.getDirection() == FeatureDirectionKind.IN).
-					findFirst().orElse(null);
-			if (sourceParameter != null) {
-				TypeUtil.addImplicitGeneralTypeTo(result,
-						SysMLPackage.eINSTANCE.getSubsetting(), 
-							FeatureUtil.chainFeatures(sourceParameter, sourceTarget));
-			}
-		}
-	}
-	
 	@Override
 	public void addAdditionalMembers() {
 		super.addAdditionalMembers();
@@ -75,32 +51,6 @@ public class FeatureChainExpressionAdapter extends OperatorExpressionAdapter {
 				TypeUtil.addOwnedFeatureTo(sourceParameter, sourceTarget);
 			}
 		}
-	}
-	
-	/**
-	 * @satisfies checkFeatureChainExpressionTargetRedefinition
-	 * @satisfies checkFeatureChainExpressionSourceTargetRedefinition
-	 */
-	protected void addTargetRedefinition() {
-		FeatureChainExpression target = getTarget();
-		Feature sourceParameter = TypeUtil.getOwnedParameterOf(target, 0, Feature.class);
-		if (sourceParameter != null) {
-			Feature sourceTarget = target.sourceTargetFeature();
-			TypeUtil.addImplicitGeneralTypeTo(sourceTarget,
-					SysMLPackage.eINSTANCE.getRedefinition(),
-					//checkFeatureChainExpressionTargetRedefinition
-					getLibraryType(ImplicitGeneralizationMap.getDefaultSupertypeFor(target.getClass(), "target")));
-			//checkFeatureChainExpressionSourceTargetRedefinition
-			TypeUtil.addImplicitGeneralTypeTo(sourceTarget,
-					SysMLPackage.eINSTANCE.getRedefinition(), target.getTargetFeature());
-			TypeUtil.setIsAddImplicitGeneralTypesFor(sourceTarget, false);
-		}
-	}
-	
-	@Override
-	public void doTransform() {
-		super.doTransform();
-		addTargetRedefinition();
 	}
 	
 }

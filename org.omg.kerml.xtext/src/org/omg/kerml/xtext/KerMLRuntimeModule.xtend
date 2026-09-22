@@ -28,6 +28,7 @@ import com.google.inject.Provides
 import org.eclipse.xtext.conversion.IValueConverterService
 import org.omg.kerml.xtext.conversion.KerMLValueConverterService
 import org.omg.sysml.util.SysMLLibraryUtil
+import org.omg.sysml.logic.implicit.specialization.api.IImplicitSpecializationService
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
@@ -44,6 +45,7 @@ class KerMLRuntimeModule extends AbstractKerMLRuntimeModule {
 	 * services from static utility code.
 	 */
 	new() {
+		XTextImplicitSpecializationService.configureServiceFactory()
 		SysMLLibraryUtil.setProviderLookup([
 			resource |
 				try {
@@ -101,4 +103,9 @@ class KerMLRuntimeModule extends AbstractKerMLRuntimeModule {
 	    LibraryNamespaces
 	}
 	
+	/** The Pilot explicitly opts into automatic caching through its injectable service. */
+	def Class<? extends IImplicitSpecializationService> bindIImplicitSpecializationService() {
+		XTextImplicitSpecializationService
+	}
+
 }
