@@ -21,10 +21,7 @@
 
 package org.omg.sysml.adapter;
 
-import org.omg.sysml.lang.sysml.Feature;
 import org.omg.sysml.lang.sysml.FeatureChainExpression;
-import org.omg.sysml.lang.sysml.SysMLFactory;
-import org.omg.sysml.util.TypeUtil;
 
 public class FeatureChainExpressionAdapter extends OperatorExpressionAdapter {
 
@@ -37,20 +34,5 @@ public class FeatureChainExpressionAdapter extends OperatorExpressionAdapter {
 		return (FeatureChainExpression)super.getTarget();
 	}
 
-	@Override
-	public void addAdditionalMembers() {
-		super.addAdditionalMembers();
-		
-		// Add sourceTarget feature.
-		FeatureChainExpression target = getTarget();
-		Feature sourceParameter = TypeUtil.getOwnedParameterOf(target, 0, Feature.class);
-		if (sourceParameter != null) {
-			if (sourceParameter.getOwnedFeature().isEmpty()) {
-				Feature sourceTarget = SysMLFactory.eINSTANCE.createFeature();
-				sourceTarget.setDeclaredName(""); // To avoid effective naming.
-				TypeUtil.addOwnedFeatureTo(sourceParameter, sourceTarget);
-			}
-		}
-	}
 	
 }
