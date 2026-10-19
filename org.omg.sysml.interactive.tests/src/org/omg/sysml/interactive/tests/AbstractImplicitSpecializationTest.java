@@ -36,6 +36,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.EcoreUtil2;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.omg.sysml.interactive.SysMLInteractive;
@@ -46,8 +47,9 @@ import org.omg.sysml.logic.implicit.specialization.ImplicitSpecializationService
 import org.omg.sysml.logic.implicit.specialization.api.ImplicitSpecialization;
 
 /**
- * Base class for implicit-specialization tests: shares the resolved standard library and
- * installs a service that caches library types and models parsed as cached.
+ * Base class for implicit-specialization tests: shares the resolved standard library
+ * within each test class and installs a service that caches library types and models
+ * parsed as cached. Subclasses must run sequentially because the fixture is static.
  */
 public class AbstractImplicitSpecializationTest {
 
@@ -58,7 +60,7 @@ public class AbstractImplicitSpecializationTest {
 	private ImplicitSpecializationService implicitSpecializationService;
 
 
-	/** Loads and resolves libraries once; test model resources are uncached unless selected explicitly. */
+	/** Loads and resolves libraries for the current test class; test models are uncached unless selected explicitly. */
 	@BeforeClass
 	public static void loadLibraries() {
 		SysMLInteractive interactive = SysMLInteractive.createInstance();
@@ -70,6 +72,13 @@ public class AbstractImplicitSpecializationTest {
 		for (int i = 0; i < resourceSet.getResources().size(); i++) {
 			EcoreUtil2.resolveLazyCrossReferences(resourceSet.getResources().get(i), null);
 		}
+	}
+
+	/** Releases library references after the test class, including when its initialization fails. */
+	@AfterClass
+	public static void releaseLibraries() {
+		immutableResources.clear();
+		resourceSet = null;
 	}
 	
 	@Before

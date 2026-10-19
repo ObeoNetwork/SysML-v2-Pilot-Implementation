@@ -40,6 +40,7 @@ import org.omg.kerml.xtext.postprocessing.ElementParserPostProcessor;
 import org.omg.kerml.xtext.postprocessing.KerMLParserPostProcessorFactory;
 import org.omg.sysml.lang.sysml.Element;
 import org.omg.sysml.lang.sysml.SysMLPackage;
+import org.omg.sysml.util.ParentFirstTreeIterator;
 
 import com.google.inject.Inject;
 
@@ -68,6 +69,16 @@ public class KerMLLinker extends LazyLinker {
 		postProcessAll(model);
 	}
 	
+	@Override
+	protected TreeIterator<EObject> getAllLinkableContents(EObject model) {
+		// AbstractTreeIterator prepares the child iterator before returning the parent.
+		// A post-processor that then prepends a child (e.g. a transition source membership)
+		// can disrupt that iterator. Capture children only AFTER processing the parent,
+		// so existing and newly created children are visited once in containment order.
+		// Reverse pushing preserves depth-first order without recursive Java calls.
+		return new ParentFirstTreeIterator(model);
+	}
+
 	protected void postProcessAll(EObject model) {
 		cache.execWithoutCacheClear(model.eResource(), new IUnitOfWork.Void<Resource>() {
 			@Override
@@ -83,7 +94,7 @@ public class KerMLLinker extends LazyLinker {
 
 		});
 	}
-	
+
 	protected ElementParserPostProcessor doGetPostProcessor(Element element) {
 		return KerMLParserPostProcessorFactory.getPostProcessor(element);
 	}

@@ -80,6 +80,11 @@ public class SysMLParserPostProcessorFactory {
 		}
 		
 		@Override
+		public ElementParserPostProcessor caseTransitionUsage(TransitionUsage element) {
+			return new TransitionUsageParserPostProcessor(element);
+		}
+
+		@Override
 		public ElementParserPostProcessor caseUsage(Usage element) {
 			return new UsageParserPostProcessor(element);
 		}

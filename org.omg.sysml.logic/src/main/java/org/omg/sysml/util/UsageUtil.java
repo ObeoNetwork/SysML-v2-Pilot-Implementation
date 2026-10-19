@@ -429,7 +429,6 @@ public class UsageUtil {
 	// Transitions
 	
 	public static Feature getSourceFeatureOf(TransitionUsage transition) {
-		NamespaceUtil.addAdditionalMembersTo(transition);
 		return transition.getOwnedMembership().stream().
 				filter(mem->!(mem instanceof FeatureMembership)).
 				map(Membership::getMemberElement).
