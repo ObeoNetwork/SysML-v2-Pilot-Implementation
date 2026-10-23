@@ -14,10 +14,8 @@ package org.omg.kerml.xtext.postprocessing;
 
 import org.omg.sysml.lang.sysml.ConstructorExpression;
 import org.omg.sysml.lang.sysml.Expression;
-import org.omg.sysml.lang.sysml.FeatureChainExpression;
 import org.omg.sysml.lang.sysml.FeatureReferenceExpression;
 import org.omg.sysml.lang.sysml.InvocationExpression;
-import org.omg.sysml.util.ExpressionUtil;
 import org.omg.sysml.util.TypeUtil;
 
 public class ExpressionParserPostProcessor extends StepParserPostProcessor {
@@ -38,9 +36,6 @@ public class ExpressionParserPostProcessor extends StepParserPostProcessor {
 		if (target instanceof FeatureReferenceExpression || target instanceof ConstructorExpression
 				|| target instanceof InvocationExpression) {
 			TypeUtil.addResultParameterTo(target);
-		}
-		if (target instanceof FeatureChainExpression chain) {
-			ExpressionUtil.prepareSourceTargetFeature(chain);
 		}
 	}
 

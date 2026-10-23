@@ -13,7 +13,8 @@ and its target. Pilot caching and SysON's uncached editable models are supported
 For a textual expression such as `v.n`, the parser constructs a
 `FeatureChainExpression` with an input parameter whose value refers to `v`, a
 membership referring to `n`, and an output result prepared by ST6RI-979.
-`ExpressionParserPostProcessor` then calls
+`FeatureChainExpressionParserPostProcessor` first invokes inherited expression
+preparation, preserving the output result, then calls
 `ExpressionUtil.prepareSourceTargetFeature(FeatureChainExpression)`.
 
 The helper inspects the expression's owned feature memberships in order and
@@ -48,7 +49,7 @@ explicitly nests two FeatureChainExpressions.
 
 ```mermaid
 flowchart LR
-    Parser[Parser: operand construction] --> Post[Expression post-processing]
+    Parser[Parser: operand construction] --> Post[Feature-chain expression post-processing]
     Post --> Prepare[ExpressionUtil.prepareSourceTargetFeature]
     Editor[Editor creation or XMI import caller] --> Prepare
     Prepare --> Structure[Input parameter owns source-target Feature]
@@ -123,3 +124,8 @@ The baseline commit passed root `mvn clean verify` in 10 min 12 s on 2026-10-12
 root `mvn clean verify` in 10 min 02 s on the same date (1672 tests reported,
 no failures or errors, 22 skipped), including all nine feature-chain tests.
 Both bundled JARs were rebuilt. No benchmark was run.
+
+Dedicated post-processor validation on 2026-10-23: root `mvn clean verify`
+succeeded in 10 min 39 s (1672 tests reported, no failures or errors, 22 skipped),
+including all nine feature-chain tests and 14 expression-result tests.
+Both bundled JARs match the rebuilt artifacts. No benchmark was run.
