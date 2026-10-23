@@ -1,6 +1,7 @@
 /*****************************************************************************
  * SysML 2 Pilot Implementation
  * Copyright (c) 2018 IncQuery Labs Ltd.
+ * Copyright (c) 2026 Obeo
  * Copyright (c) 2018-2022, 2024, 2025 Model Driven Solutions, Inc.
  * Copyright (c) 2018-2020 California Institute of Technology/Jet Propulsion Laboratory
  *    
@@ -54,7 +55,6 @@ import org.omg.sysml.lang.sysml.SysMLPackage
 import com.google.inject.Inject
 import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.emf.ecore.util.EcoreUtil
-import org.omg.sysml.util.NamespaceUtil
 import org.omg.kerml.xtext.naming.QualifiedNameUtil
 import org.omg.sysml.lang.sysml.Redefinition
 
@@ -263,7 +263,6 @@ class KerMLScope extends AbstractScope {
 				ownedvisited.add(ns)		
 			}
 			
-			NamespaceUtil.addAdditionalMembersTo(ns)
 			for (mem: ns.ownedMembership.clone) { // Clone to avoid any possible ConcurrentModificationException.
 				if (!(scopeProvider.visited.contains(mem) || 
 				     mem instanceof OwningMembership && skip instanceof Redefinition && 

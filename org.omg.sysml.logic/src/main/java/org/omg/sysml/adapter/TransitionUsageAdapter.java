@@ -116,11 +116,6 @@ public class TransitionUsageAdapter extends ActionUsageAdapter {
 	}
 
 	@Override
-	public void addAdditionalMembers() {
-		computeTransitionLinkConnectors();
-	}
-
-	@Override
 	public void forEachImplicitBindingConnector(Consumer<BindingConnector> consumer) {
 		computeTransitionLinkConnectors();
 		super.forEachImplicitBindingConnector(consumer);

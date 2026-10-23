@@ -279,7 +279,6 @@ public class TypeUtil {
 	
 	private static Feature getResultParameterOf(Type type, Set<Type> visited) {
 		visited.add(type);
-		getTypeAdapter(type).addAdditionalMembers();
 		Feature resultParameter = getOwnedResultParameterOf(type);
 		if (resultParameter == null) {
 			for (Type general: getGeneralTypesOf(type)) {
@@ -330,7 +329,6 @@ public class TypeUtil {
 	
 	private static Set<ResultExpressionMembership> getResultExpressionMembershipsOf(Type type, Set<Type> visited) {
 		visited.add(type);
-		getTypeAdapter(type).addAdditionalMembers();
 		Set<ResultExpressionMembership> resultExpressions = new HashSet<>(getOwnedResultExpressionMembershipsOf(type));
 		for (Type general: getSupertypesOf(type)) {
 			if (general != null && !visited.contains(general)) {

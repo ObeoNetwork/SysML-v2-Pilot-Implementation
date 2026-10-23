@@ -1,6 +1,7 @@
 /*******************************************************************************
  * SysML 2 Pilot Implementation
  * Copyright (c) 2021, 2024, 2025, 2026 Model Driven Solutions, Inc.
+ * Copyright (c) 2026 Obeo
  *    
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the Eclipse Public License as published by
@@ -155,17 +156,6 @@ public class NamespaceAdapter extends ElementAdapter {
 	public void clearCaches() {
 		super.clearCaches();
 		importedMembership = null;
-	}
-	
-	// Transformation
-	
-	public void addAdditionalMembers() {
-	}
-	
-	@Override
-	public void doTransform() {
-		addAdditionalMembers();
-		super.doTransform();
 	}
 	
 }
