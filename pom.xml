@@ -475,8 +475,8 @@
   <distributionManagement>
     <repository>
       <id>github</id>
-      <name>GitHub Obeo Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/obeo/SysML-v2-Pilot-Implementation-Obeo</url>
+      <name>GitHub ObeoNetwork Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/ObeoNetwork/SysML-v2-Pilot-Implementation</url>
     </repository>
   </distributionManagement>
 
